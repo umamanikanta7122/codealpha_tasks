@@ -179,13 +179,12 @@ def order_success(request):
         )
 
         order = Order.objects.create(
-    user=request.user,
-    customer_name=name,
-    phone=phone,
-    address=address,
-    payment_method=payment,
-    total_amount=total
-)
+            user=request.user,
+            customer_name=name,
+            phone=phone,
+            address=address,
+            total_amount=total
+        )
 
         for item in cart_items:
 
