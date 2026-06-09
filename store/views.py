@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Cart, Review, Order, OrderItem
 import google.generativeai as genai
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 
 genai.configure(
@@ -148,6 +149,7 @@ def logout_user(request):
 
 
 
+@login_required(login_url='/login/')
 def checkout(request):
     return render(request, 'checkout.html')
 
@@ -162,6 +164,7 @@ def increase_quantity(request, cart_id):
     item.save()
 
     return redirect('/cart/')
+@login_required(login_url='/login/')
 def order_success(request):
 
     if request.method == "POST":
