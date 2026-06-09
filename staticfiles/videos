@@ -1,0 +1,12 @@
+<div class="hero">
+
+    <video autoplay muted loop>
+        <source src="{% static 'videos/tech-bg.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="hero-content">
+        <h1>TECHVERSE</h1>
+        <p>Future of Smart Shopping</p>
+    </div>
+
+</div>
