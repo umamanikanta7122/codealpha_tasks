@@ -1,0 +1,161 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="product-container">
+
+    <div class="product-image-section">
+        <img src="{{ product.image }}" class="product-big-image">
+    </div>
+
+    <div class="product-info-section">
+
+        <h1>{{ product.name }}</h1>
+
+        <p class="rating">
+            ⭐ {{ product.rating }}/5
+        </p>
+
+        <p class="brand">
+            Brand: {{ product.brand }}
+        </p>
+
+        <p class="stock">
+            📦 {{ product.stock }} In Stock
+        </p>
+
+        <p class="category">
+            Category: {{ product.category }}
+        </p>
+
+        <div class="trust-badges">
+
+    <p>🚚 Free Delivery</p>
+
+    <p>🔒 Secure Payment</p>
+
+    <p>↩️ 7 Days Return</p>
+
+</div>
+
+        <p class="description">
+            {{ product.description }}
+        </p>
+
+        <div class="product-buttons">
+
+            <a href="{% url 'add_to_cart' product.id %}">
+                <button class="cart-btn">
+                    Add To Cart
+                </button>
+            </a>
+
+            <button class="buy-btn">
+                Buy Now
+            </button>
+
+        </div>
+
+        <br>
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back To Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<hr>
+
+<h2 style="text-align:center;">⭐ Customer Reviews</h2>
+
+<div class="review-section">
+
+    <form method="POST"
+          action="{% url 'add_review' product.id %}">
+
+        {% csrf_token %}
+
+        <label><b>Rating</b></label>
+        <br><br>
+
+        <select name="rating" required>
+
+            <option value="5">⭐⭐⭐⭐⭐ </option>
+            <option value="4">⭐⭐⭐⭐ </option>
+            <option value="3">⭐⭐⭐ </option>
+            <option value="2">⭐⭐ </option>
+            <option value="1">⭐ </option>
+
+        </select>
+
+        <br><br>
+
+        <textarea
+            name="comment"
+            placeholder="Write your review..."
+            required>
+        </textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Submit Review
+        </button>
+
+    </form>
+
+</div>
+
+<br>
+
+{% for review in reviews %}
+
+<div class="review-card">
+
+    <h4>{{ review.user.username }}</h4>
+
+<small>
+    {{ review.created_at|date:"d M Y" }}
+</small>
+
+    <p class="review-rating">
+
+{% if review.rating == 5 %}
+⭐⭐⭐⭐⭐
+{% elif review.rating == 4 %}
+⭐⭐⭐⭐
+{% elif review.rating == 3 %}
+⭐⭐⭐
+{% elif review.rating == 2 %}
+⭐⭐
+{% else %}
+⭐
+{% endif %}
+
+</p>
+
+    <p>
+        {{ review.comment }}
+    </p>
+
+</div>
+
+{% empty %}
+
+<p style="text-align:center;">
+    No reviews yet.
+</p>
+
+{% endfor %}

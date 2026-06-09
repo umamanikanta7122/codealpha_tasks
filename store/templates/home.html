@@ -1,0 +1,239 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+   
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+ 
+<div id="chat-button">
+    💬 AI Assistant
+</div>
+
+<div id="chat-box">
+
+    <div class="chat-header">
+        TechVerse AI
+    </div>
+
+    <div id="chat-messages"></div>
+
+    <div class="chat-input">
+
+        <input
+            type="text"
+            id="user-message"
+            placeholder="Ask something..."
+        >
+
+    <button onclick="sendMessage()">
+    Send
+</button>
+
+    </div>
+
+</div>
+
+<script>
+
+const chatButton =
+document.getElementById("chat-button");
+
+const chatBox =
+document.getElementById("chat-box");
+
+chatButton.onclick = () => {
+
+    if(chatBox.style.display === "block"){
+        chatBox.style.display = "none";
+    }
+    else{
+        chatBox.style.display = "block";
+    }
+
+}
+
+function sendMessage() {
+
+    let message =
+    document.getElementById("user-message").value;
+
+    fetch(`/chatbot/?message=${message}`)
+    .then(response => response.json())
+    .then(data => {
+
+        let chatMessages =
+        document.getElementById("chat-messages");
+
+        chatMessages.innerHTML +=
+        `<p><b>You:</b> ${message}</p>`;
+
+        chatMessages.innerHTML +=
+        `<p><b>AI:</b> ${data.reply}</p>`;
+
+        document.getElementById("user-message").value = "";
+    });
+
+}
+
+</script>
+<body>
+
+ <div class="welcome-section">
+
+    <img src="{% static 'images/logo.png' %}"
+         class="welcome-logo">
+
+</div>
+
+</div>
+
+<div class="navbar">
+
+    <div class="nav-left"></div>
+
+    <div class="nav-icons">
+
+        
+
+        <a href="{% url 'cart' %}" class="cart-icon">
+            🛒Cart-
+            <span>{{ cart_count }}</span>
+        </a>
+        <a href="{% url 'my_orders' %}" class="cart-icon">
+        📦 My Orders
+         </a>
+
+        <a href="{% url 'login' %}" class="cart-icon">
+            🔑Login
+        </a>
+
+        <a href="{% url 'register' %}" class="cart-icon">
+            👤Register
+        </a>
+
+        <a href="{% url 'logout' %}" class="cart-icon">
+            🚪Logout
+        </a>
+
+    </div>
+
+</div>
+<div style="text-align:center; margin:10px;">
+    <h3 style="color:#120303;">
+        📦 {{ product_count }} Products Available
+    </h3>
+</div>
+
+
+<form method="GET" style="text-align:center; margin:20px;">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="🔍 Search products..."
+        style="
+            padding:10px;
+            width:300px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+
+
+
+
+
+
+
+<div class="main-container">
+
+    <div class="sidebar">
+
+        <h3>📂 Categories</h3>
+
+        <a href="/">📦 All Products</a>
+
+        {% for category in categories %}
+
+            <a href="/?category={{ category }}">
+               {% if category == "home-decoration" %}
+🏠 Home Decoration
+
+{% elif category == "kitchen-accessories" %}
+🍳 Kitchen Accessories
+
+{% elif category == "mens-watches" %}
+⌚ Watches
+
+{% elif category == "mobile-accessories" %}
+🎧 Mobile Accessories
+
+{% elif category == "mens-shirts" %}
+👕 Men's Shirts
+
+{% elif category == "mens-shoes" %}
+👟 Men's Shoes
+
+{% else %}
+{{ category|title }}
+
+{% endif %}
+            </a>
+
+        {% endfor %}
+
+    </div>
+    {% if selected_category %}
+<h2>{{ selected_category|title }}</h2>
+{% else %}
+<h2>All Products</h2>
+{% endif %}
+      
+    <div class="products">
+
+{% for product in products %}
+
+<div class="card">
+
+    <img src="{{ product.image }}">
+
+    <h2>{{ product.name }}</h2>
+    <p><strong>Category:</strong> {{ product.category }}</p>
+
+    <p>{{ product.description }}</p>
+
+    <h3>₹ {{ product.price }}</h3>
+
+    <a href="{% url 'product_detail' product.id %}">
+        <button>View Details</button>
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'add_to_cart' product.id %}">
+        <button>Add To Cart</button>
+    </a>
+
+</div>
+
+{% endfor %}
+
+</div> <!-- products -->
+</div> <!-- main-container -->
+</div>
+<button id="chat-btn">
+💬 AI Assistant
+</button>
+
+</body>
+</html>

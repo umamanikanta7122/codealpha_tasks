@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Cart</title>
+
+```
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+```
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+```
+<h1>Your Cart</h1>
+
+<a href="/" class="home-btn">
+    🏠 Home
+</a>
+```
+
+</div>
+
+<div class="products">
+
+{% if cart_items %}
+
+{% for item in cart_items %}
+
+<div class="card">
+
+```
+<img src="{{ item.product.image }}">
+
+<h2>{{ item.product.name }}</h2>
+
+<h3>₹ {{ item.product.price }}</h3>
+
+<div class="quantity-box">
+
+    <a href="{% url 'decrease_quantity' item.id %}">
+        <button>-</button>
+    </a>
+
+    <span class="qty-number">
+        {{ item.quantity }}
+    </span>
+
+    <a href="{% url 'increase_quantity' item.id %}">
+        <button>+</button>
+    </a>
+
+</div>
+
+<a href="{% url 'remove_from_cart' item.id %}">
+    <button class="delete-btn">
+        Delete
+    </button>
+</a>
+```
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<h2 style="text-align:center;">
+    Your cart is empty 🛒
+</h2>
+
+{% endif %}
+
+</div>
+
+<h2 class="total-price">
+    Total: ₹ {{ total }}
+</h2>
+
+<div style="text-align:center; margin-bottom:40px;">
+
+```
+<a href="{% url 'checkout' %}">
+    <button style="
+        background:#28a745;
+        color:white;
+        padding:15px 30px;
+        font-size:18px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+    ">
+        Proceed to Checkout
+    </button>
+</a>
+```
+
+</div>
+
+</body>
+</html>
