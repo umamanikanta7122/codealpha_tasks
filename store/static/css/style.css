@@ -873,3 +873,27 @@ font-size:30px;
     padding:10px;
 }
 
+
+.add-cart-btn,
+.buy-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:180px;
+    height:60px;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    text-decoration:none;
+    cursor:pointer;
+}
+
+.add-cart-btn{
+    background:#14b8d4;
+}
+
+.buy-btn{
+    background:#ff9800;
+}
