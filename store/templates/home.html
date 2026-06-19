@@ -2,16 +2,20 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
-   
-<link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" href="{% static 'images/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
- 
+
+<body>
+
+<!-- AI Chat Button -->
 <div id="chat-button">
     💬 AI Assistant
 </div>
 
+<!-- AI Chat Box -->
 <div id="chat-box">
 
     <div class="chat-header">
@@ -28,14 +32,171 @@
             placeholder="Ask something..."
         >
 
-    <button onclick="sendMessage()">
-    Send
-</button>
+        <button onclick="sendMessage()">
+            Send
+        </button>
 
     </div>
 
 </div>
 
+<!-- Logo Section -->
+<div class="welcome-section">
+
+    <img src="{% static 'images/logo.png' %}"
+         class="welcome-logo">
+
+</div>
+
+<!-- Navbar -->
+<div class="navbar">
+
+    <div class="nav-left"></div>
+
+    <div class="nav-icons">
+
+        <a href="{% url 'cart' %}" class="cart-icon">
+            🛒Cart-
+            <span>{{ cart_count }}</span>
+        </a>
+
+        <a href="{% url 'my_orders' %}" class="cart-icon">
+            📦 My Orders
+        </a>
+
+        <a href="{% url 'login' %}" class="cart-icon">
+            🔑Login
+        </a>
+
+        <a href="{% url 'register' %}" class="cart-icon">
+            👤Register
+        </a>
+
+        <a href="{% url 'logout' %}" class="cart-icon">
+            🚪Logout
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Product Count -->
+<div style="text-align:center; margin:10px;">
+    <h3 style="color:#120303;">
+        📦 {{ product_count }} Products Available
+    </h3>
+</div>
+
+<!-- Search -->
+<form method="GET" style="text-align:center; margin:20px;">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="🔍 Search products..."
+        style="
+            padding:10px;
+            width:300px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<!-- Main Section -->
+<div class="main-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <h3>📂 Categories ></h3>
+
+        <a href="/">📦 All Products</a>
+
+        {% for category in categories %}
+
+            <a href="/?category={{ category }}">
+
+            {% if category == "home-decoration" %}
+                🏠 Home Decoration
+
+            {% elif category == "kitchen-accessories" %}
+                🍳 Kitchen Accessories
+
+            {% elif category == "mens-watches" %}
+                ⌚ Watches
+
+            {% elif category == "mobile-accessories" %}
+                🎧 Mobile Accessories
+
+            {% elif category == "mens-shirts" %}
+                👕 Men's Shirts
+
+            {% elif category == "mens-shoes" %}
+                👟 Men's Shoes
+
+            {% else %}
+                {{ category|title }}
+
+            {% endif %}
+
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- Products Title -->
+    {% if selected_category %}
+        <h2>{{ selected_category|title }}</h2>
+    {% else %}
+        <h2>All Products</h2>
+    {% endif %}
+
+    <!-- Products -->
+    <div class="products">
+
+        {% for product in products %}
+
+        <div class="card">
+
+            <img src="{{ product.image }}">
+
+            <h2>{{ product.name }}</h2>
+
+            <p>
+                <strong>Category:</strong>
+                {{ product.category }}
+            </p>
+
+            <p>{{ product.description }}</p>
+
+            <h3>₹ {{ product.price }}</h3>
+
+            <a href="{% url 'product_detail' product.id %}">
+                <button>View Details</button>
+            </a>
+
+            <br><br>
+
+            <a href="{% url 'add_to_cart' product.id %}">
+                <button>Add To Cart</button>
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- JavaScript at bottom -->
 <script>
 
 const chatButton =
@@ -79,161 +240,6 @@ function sendMessage() {
 }
 
 </script>
-<body>
-
- <div class="welcome-section">
-
-    <img src="{% static 'images/logo.png' %}"
-         class="welcome-logo">
-
-</div>
-
-</div>
-
-<div class="navbar">
-
-    <div class="nav-left"></div>
-
-    <div class="nav-icons">
-
-        
-
-        <a href="{% url 'cart' %}" class="cart-icon">
-            🛒Cart-
-            <span>{{ cart_count }}</span>
-        </a>
-        <a href="{% url 'my_orders' %}" class="cart-icon">
-        📦 My Orders
-         </a>
-
-        <a href="{% url 'login' %}" class="cart-icon">
-            🔑Login
-        </a>
-
-        <a href="{% url 'register' %}" class="cart-icon">
-            👤Register
-        </a>
-
-        <a href="{% url 'logout' %}" class="cart-icon">
-            🚪Logout
-        </a>
-
-    </div>
-
-</div>
-<div style="text-align:center; margin:10px;">
-    <h3 style="color:#120303;">
-        📦 {{ product_count }} Products Available
-    </h3>
-</div>
-
-
-<form method="GET" style="text-align:center; margin:20px;">
-
-    <input
-        type="text"
-        name="q"
-        placeholder="🔍 Search products..."
-        style="
-            padding:10px;
-            width:300px;
-            border-radius:8px;
-            border:1px solid #ccc;
-        "
-    >
-
-    <button type="submit">
-        Search
-    </button>
-
-</form>
-
-
-
-
-
-
-
-
-<div class="main-container">
-
-    <div class="sidebar">
-
-        <h3>📂 Categories</h3>
-
-        <a href="/">📦 All Products</a>
-
-        {% for category in categories %}
-
-            <a href="/?category={{ category }}">
-               {% if category == "home-decoration" %}
-🏠 Home Decoration
-
-{% elif category == "kitchen-accessories" %}
-🍳 Kitchen Accessories
-
-{% elif category == "mens-watches" %}
-⌚ Watches
-
-{% elif category == "mobile-accessories" %}
-🎧 Mobile Accessories
-
-{% elif category == "mens-shirts" %}
-👕 Men's Shirts
-
-{% elif category == "mens-shoes" %}
-👟 Men's Shoes
-
-{% else %}
-{{ category|title }}
-
-{% endif %}
-            </a>
-
-        {% endfor %}
-
-    </div>
-    {% if selected_category %}
-<h2>{{ selected_category|title }}</h2>
-{% else %}
-<h2>All Products</h2>
-{% endif %}
-      
-    <div class="products">
-
-{% for product in products %}
-
-<div class="card">
-
-    <img src="{{ product.image }}">
-
-    <h2>{{ product.name }}</h2>
-    <p><strong>Category:</strong> {{ product.category }}</p>
-
-    <p>{{ product.description }}</p>
-
-    <h3>₹ {{ product.price }}</h3>
-
-    <a href="{% url 'product_detail' product.id %}">
-        <button>View Details</button>
-    </a>
-
-    <br><br>
-
-    <a href="{% url 'add_to_cart' product.id %}">
-        <button>Add To Cart</button>
-    </a>
-
-</div>
-
-{% endfor %}
-
-</div> <!-- products -->
-</div> <!-- main-container -->
-</div>
-<button id="chat-btn">
-💬 AI Assistant
-</button>
 
 </body>
 </html>

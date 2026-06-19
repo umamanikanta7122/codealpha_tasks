@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
 from .models import Product, Cart, Review, Order, OrderItem
 import google.generativeai as genai
 from django.http import JsonResponse
@@ -55,7 +54,7 @@ def home(request):
     if category:
         products = products.filter(category=category)
 
-    cart_items = Cart.objects.all()
+    cart_items = Cart.objects.filter(user=request.user)
 
     cart_count = sum(item.quantity for item in cart_items)
 
@@ -90,7 +89,7 @@ def product_detail(request, product_id):
 @login_required(login_url='/login/')
 def cart(request):
 
-    cart_items = Cart.objects.all()
+    cart_items = Cart.objects.filter(user=request.user)
 
     total = sum(item.product.price * item.quantity for item in cart_items)
 
@@ -102,17 +101,21 @@ def cart(request):
 
 def remove_from_cart(request, cart_id):
 
-    item = Cart.objects.get(id=cart_id)
+    item = Cart.objects.get(id=cart_id, user=request.user)
 
     item.delete()
 
     return redirect('/cart/')
 
+@login_required(login_url='/login/')
 def add_to_cart(request, product_id):
 
     product = Product.objects.get(id=product_id)
 
-    cart_item, created = Cart.objects.get_or_create(product=product)
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
 
     if not created:
         cart_item.quantity += 1
@@ -124,16 +127,21 @@ def add_to_cart(request, product_id):
 def register(request):
 
     if request.method == 'POST':
-
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
+            print("FORM VALID")
 
             user = form.save()
 
             login(request, user)
 
-            return redirect('/')
+            print("USER LOGGED IN:", request.user.is_authenticated)
+
+            return redirect('home')
+
+        else:
+            print(form.errors)
 
     else:
         form = UserCreationForm()
@@ -157,13 +165,13 @@ def checkout(request):
 
 def increase_quantity(request, cart_id):
 
-    item = Cart.objects.get(id=cart_id)
+     item = Cart.objects.get(id=cart_id, user=request.user)
 
-    item.quantity += 1
+     item.quantity += 1
 
-    item.save()
+     item.save()
 
-    return redirect('/cart/')
+     return redirect('/cart/')
 @login_required(login_url='/login/')
 def order_success(request):
 
@@ -174,7 +182,7 @@ def order_success(request):
         address = request.POST.get("address")
         payment = request.POST.get("payment")
 
-        cart_items = Cart.objects.all()
+        cart_items = Cart.objects.filter(user=request.user)
 
         total = sum(
             item.product.price * item.quantity
@@ -206,7 +214,7 @@ def order_success(request):
 
 def decrease_quantity(request, cart_id):
 
-    item = Cart.objects.get(id=cart_id)
+    item = Cart.objects.get(id=cart_id, user=request.user)
 
     if item.quantity > 1:
         item.quantity -= 1
